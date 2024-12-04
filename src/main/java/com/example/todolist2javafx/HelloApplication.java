@@ -1,10 +1,10 @@
 package com.example.todolist2javafx;
 
+import com.example.todolist2javafx.datamodel.TodoData;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class HelloApplication extends Application {
@@ -16,6 +16,17 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    @Override
+    public void stop() throws Exception {
+        TodoData.getInstance().storeTodoItems(); // Pass the current user ID
+    }
+
+    @Override
+    public void init() throws Exception {
+        TodoData.getInstance().loadTodoItems(); // Pass the current user ID
+    }
+
 
     public static void main(String[] args) {
         launch();

@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,7 +25,7 @@ public class DBmanage {
             try {
                 FXMLLoader loader = new FXMLLoader(DBmanage.class.getResource(fxmlFile));
                 root = loader.load();
-                MainMenu mainMenu = loader.getController();
+                //MainMenu mainMenu = loader.getController();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -43,7 +44,7 @@ public class DBmanage {
     }
 
     public static void signUp(ActionEvent actionEvent, String username, String password) {
-        String url = "jdbc:mysql://localhost:3306/todolist-javafx";
+        String url = "jdbc:mysql://127.0.0.1:3306/todolist-javafx";
         String dbUser = "devuser";
         String dbPassword = "Dpa0912@";
 
@@ -77,7 +78,7 @@ public class DBmanage {
     }
 
     public static void LogIn(ActionEvent actionEvent, String username, String password){
-        String url = "jdbc:mysql://localhost:3306/todolist-javafx";
+        String url = "jdbc:mysql://127.0.0.1:3306/todolist-javafx";
         String dbUser = "devuser";
         String dbPassword = "Dpa0912@";
         Connection conn = null;
@@ -97,7 +98,8 @@ public class DBmanage {
                 while (resultSet.next()) {
                     String retrievedPass = resultSet.getString("password");
                     if (retrievedPass.equals(password)) {
-                        navigate(actionEvent,"MainMenu.fxml","Main Menu", username);
+                        navigate(actionEvent,"main-window.fxml","Main Window", username);
+//                        TodoData.getInstance().loadTodoItems(username);
                     } else {
                         System.out.println("Wrong password");
                         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -105,6 +107,7 @@ public class DBmanage {
                         alert.show();
                     }
                 }
+
             }
         }catch (SQLException e){
             e.printStackTrace();
