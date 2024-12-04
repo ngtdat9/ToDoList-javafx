@@ -26,15 +26,5 @@ public class DialogController {
         TodoData.getInstance().addTodoItem(newItem);
         return newItem;
     }
-//public ToDoItem processResults() {
-//    String shortDescription = shortDescriptionField.getText().trim();
-//    String details = detailsArea.getText().trim();
-//    LocalDate deadlineValue = deadlinePicker.getValue();
-//
-//    ToDoItem newItem = new ToDoItem(shortDescription, details, deadlineValue);
-//    int currentUserId = HelloApplication.getCurrentUserId(); // Retrieve the current user ID
-//    TodoData.getInstance().addTodoItem(newItem, currentUserId); // Pass the user ID
-//    return newItem;
-//}
 
 }
