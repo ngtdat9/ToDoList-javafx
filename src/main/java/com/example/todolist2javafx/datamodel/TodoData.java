@@ -78,6 +78,54 @@ public class TodoData {
             e.printStackTrace();
         }
     }
+    public void deleteTodoItem(ToDoItem item) {
+        // First, remove the item from the observable list (UI)
+        toDoItems.remove(item);
+
+        // Then, remove the item from the database
+        String deleteQuery = "DELETE FROM todo_items WHERE short_description = ? AND details = ? AND deadline = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(deleteQuery)) {
+
+            pstmt.setString(1, item.getShortDescription());
+            pstmt.setString(2, item.getDetails());
+            pstmt.setDate(3, Date.valueOf(item.getDeadline()));
+
+            // Execute the delete query
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    public void deleteTodoItem(ToDoItem item) {
+//        String deleteQuery = "DELETE FROM todo_items WHERE short_description = ? AND details = ? AND deadline = ?";
+//
+//        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+//             PreparedStatement pstmt = conn.prepareStatement(deleteQuery)) {
+//
+//            // Set the parameters for the DELETE query
+//            pstmt.setString(1, item.getShortDescription());
+//            pstmt.setString(2, item.getDetails());
+//            pstmt.setDate(3, Date.valueOf(item.getDeadline()));
+//
+//            // Execute the DELETE query
+//            int affectedRows = pstmt.executeUpdate();
+//
+//            if (affectedRows > 0) {
+//                System.out.println("Task deleted successfully!");
+//            } else {
+//                System.out.println("No task found with the given details.");
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            System.out.println("Error deleting task: " + e.getMessage());
+//        }
+//    }
+
 
     private void saveTodoItemToDatabase(ToDoItem item) {
         String insertQuery = "INSERT INTO todo_items (user_id, short_description, details, deadline) VALUES (?, ?, ?, ?)";
