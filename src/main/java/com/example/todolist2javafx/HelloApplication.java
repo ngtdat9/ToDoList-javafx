@@ -19,12 +19,12 @@ public class HelloApplication extends Application {
 
     @Override
     public void stop() throws Exception {
-        TodoData.getInstance().storeTodoItems(); // Pass the current user ID
+        TodoData.getInstance().storeTodoItems();
     }
 
     @Override
     public void init() throws Exception {
-        TodoData.getInstance().loadTodoItems(); // Pass the current user ID
+        TodoData.getInstance().loadTodoItems();
     }
 
 

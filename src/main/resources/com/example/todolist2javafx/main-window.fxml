@@ -4,17 +4,38 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <BorderPane fx:id="mainBorderPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.example.todolist2javafx.HelloController">
     <top>
-        <MenuBar>
-            <Menu text="File">
-                <items>
-                    <MenuItem text="New..." onAction="#showNewDialog"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Exit"/>
-                </items>
-            </Menu>
-        </MenuBar>
+        <VBox>
+<!--            <MenuBar>-->
+<!--                <Menu text="File">-->
+<!--                    <items>-->
+<!--                        <MenuItem text="New..." onAction="#showNewDialog"/>-->
+<!--                        <SeparatorMenuItem/>-->
+<!--                        <MenuItem text="Exit"/>-->
+<!--                    </items>-->
+<!--                </Menu>-->
+<!--            </MenuBar>-->
+            <ToolBar>
+                <HBox>
+                    <Button text="New" onAction="#showNewDialog">
+                        <graphic>
+                            <ImageView fitWidth="24" fitHeight="24" preserveRatio="true">
+                                <Image url="@../../../Imgs/plusicon.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="logout_button" layoutX="273.0" layoutY="187.0" mnemonicParsing="false" text="Log out">
+                        <font>
+                            <Font name="Arial Rounded MT Bold" size="16.0" />
+                        </font>
+                    </Button>
+                </HBox>
+            </ToolBar>
+
+        </VBox>
     </top>
 
 

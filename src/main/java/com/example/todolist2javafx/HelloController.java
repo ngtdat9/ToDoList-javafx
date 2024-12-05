@@ -35,9 +35,9 @@ public class HelloController {
 
     private List<ToDoItem> todoItems;
     public void initialize() {
-        // Create the context menu
         listContextMenu = new ContextMenu();
         MenuItem deleteMenuItem = new MenuItem("Delete");
+        MenuItem editMenuItem = new MenuItem("Edit");
         deleteMenuItem.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -47,7 +47,17 @@ public class HelloController {
         });
         listContextMenu.getItems().add(deleteMenuItem);
 
-        // Set up the ListView selection listener
+        editMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                ToDoItem item = todoListView.getSelectionModel().getSelectedItem();
+                if (item != null) {
+                    showEditItemDialog(item);
+                }
+            }
+        });
+        listContextMenu.getItems().add(editMenuItem);
+
         todoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ToDoItem>() {
             @Override
             public void changed(ObservableValue<? extends ToDoItem> observableValue, ToDoItem oldValue, ToDoItem newValue) {
@@ -60,12 +70,10 @@ public class HelloController {
             }
         });
 
-        // Set the ListView items
         todoListView.setItems(TodoData.getInstance().getToDoItems());
         todoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         todoListView.getSelectionModel().selectFirst();
 
-        // Set up the ListCell to show context menu on right-click
         todoListView.setCellFactory(new Callback<ListView<ToDoItem>, ListCell<ToDoItem>>() {
             @Override
             public ListCell<ToDoItem> call(ListView<ToDoItem> toDoItemListView) {
@@ -84,18 +92,13 @@ public class HelloController {
                     }
                 };
 
-                // Show the context menu when right-clicking an item in the ListView
                 cell.setContextMenu(listContextMenu);
-
-                // Handle right-click event to show the context menu
                 cell.setOnContextMenuRequested(event -> {
                     if (!cell.isEmpty()) {
-                        // This ensures the right-clicked item is selected before showing the context menu
                         todoListView.getSelectionModel().select(cell.getItem());
                         listContextMenu.show(cell, event.getScreenX(), event.getScreenY());
                     }
                 });
-
                 return cell;
             }
         });
@@ -127,6 +130,44 @@ public class HelloController {
             System.out.println("User canceled");
         }
     }
+
+    @FXML
+    public void showEditItemDialog(ToDoItem selectedItem) {
+        if (selectedItem == null) {
+            System.out.println("No item selected to edit.");
+            return;
+        }
+
+        Dialog<ButtonType> editDialog = new Dialog<>();
+        editDialog.initOwner(mainBorderPane.getScene().getWindow());
+        editDialog.setTitle("Edit Task: " + selectedItem.getShortDescription());
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("todoItemDialog.fxml"));
+
+        try {
+            editDialog.getDialogPane().setContent(fxmlLoader.load());
+        } catch (IOException e) {
+            System.out.println("The dialog could not be loaded");
+            e.printStackTrace();
+            return;
+        }
+
+        editDialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+        editDialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+        DialogController editDialogController = fxmlLoader.getController();
+        editDialogController.adoptItemDetails(selectedItem); // Nạp thông tin cũ vào dialog
+
+        Optional<ButtonType> result = editDialog.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            editDialogController.modifyItemDetails(selectedItem); // Lấy thông tin mới
+            TodoData.getInstance().storeTodoItems(); // Lưu lại vào cơ sở dữ liệu
+            todoListView.refresh(); // Làm mới danh sách hiển thị
+        }
+    }
+
+
     @FXML
     public void handleKeyPressed(KeyEvent keyEvent) {
         System.out.println("Key pressed: " + keyEvent.getCode());
