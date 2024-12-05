@@ -4,24 +4,31 @@ import com.example.todolist2javafx.datamodel.ToDoItem;
 import com.example.todolist2javafx.datamodel.TodoData;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 public class HelloController {
+    @FXML
+    private Button logout_button;
     @FXML
     private ListView<ToDoItem> todoListView;
     @FXML
@@ -70,7 +77,15 @@ public class HelloController {
             }
         });
 
-        todoListView.setItems(TodoData.getInstance().getToDoItems());
+        SortedList<ToDoItem> sortedList = new SortedList<ToDoItem>(TodoData.getInstance().getToDoItems(),
+                new Comparator<ToDoItem>() {
+                    @Override
+                    public int compare(ToDoItem o1, ToDoItem o2) {
+                        return o1.getDeadline().compareTo(o2.getDeadline());
+                    }
+                });
+        
+        todoListView.setItems(sortedList);
         todoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         todoListView.getSelectionModel().selectFirst();
 
@@ -190,6 +205,19 @@ public class HelloController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && (result.get() == ButtonType.OK)){
             TodoData.getInstance().deleteTodoItem(item);
+        }
+    }
+
+    @FXML
+    private void handleLogout() {
+        try {
+            Stage currentStage = (Stage) (logout_button.getScene().getWindow());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
+            Parent root = loader.load();
+            currentStage.setScene(new Scene(root));
+            currentStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
