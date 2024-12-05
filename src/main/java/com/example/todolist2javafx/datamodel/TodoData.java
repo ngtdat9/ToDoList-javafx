@@ -97,12 +97,79 @@ public class TodoData {
         }
     }
 
+    public void updateTodoItem(ToDoItem item) {
+        String updateQuery = "UPDATE todo_items SET short_description = ?, details = ?, deadline = ? WHERE short_description = ? AND details = ? AND deadline = ?";
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+             PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
+
+            // Thiết lập thông tin mới
+            pstmt.setString(1, item.getShortDescription());
+            pstmt.setString(2, item.getDetails());
+            pstmt.setDate(3, Date.valueOf(item.getDeadline()));
+
+            // Thiết lập thông tin cũ để xác định mục cần chỉnh sửa
+            pstmt.setString(4, item.getShortDescription());
+            pstmt.setString(5, item.getDetails());
+            pstmt.setDate(6, Date.valueOf(item.getDeadline()));
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Task updated successfully in the database.");
+            } else {
+                System.out.println("Task update failed: No matching record found.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+//    public void updateTodoItem(ToDoItem item) {
+//        String updateQuery = "UPDATE todo_items SET short_description = ?, details = ?, deadline = ? WHERE todo_id = ?";
+//        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+//             PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
+//
+//            pstmt.setString(1, item.getShortDescription());
+//            pstmt.setString(2, item.getDetails());
+//            pstmt.setDate(3, Date.valueOf(item.getDeadline()));
+//            pstmt.setInt(4, item.getTodo_id()); // Use the unique ID of the item
+//
+//            int rowsAffected = pstmt.executeUpdate();
+//            if (rowsAffected > 0) {
+//                System.out.println("Task updated successfully in the database.");
+//            } else {
+//                System.out.println("Task update failed: No matching record found.");
+//            }
+//
+//            // Reflect changes in the ObservableList
+//            boolean updatedInList = false;
+//            for (int i = 0; i < toDoItems.size(); i++) {
+//                if (toDoItems.get(i).getTodo_id() == item.getTodo_id()) {
+//                    toDoItems.set(i, item); // Replace the existing item in the list
+//                    updatedInList = true;
+//                    break;
+//                }
+//            }
+//
+//            if (!updatedInList) {
+//                System.out.println("Task update failed: Item not found in ObservableList.");
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+
+
     private void saveTodoItemToDatabase(ToDoItem item) {
         String insertQuery = "INSERT INTO todo_items (user_id, short_description, details, deadline) VALUES (?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(insertQuery)) {
 
-            pstmt.setInt(1, 1); // Replace with actual user_id as needed
+            pstmt.setInt(1, 1);
             pstmt.setString(2, item.getShortDescription());
             pstmt.setString(3, item.getDetails());
             pstmt.setDate(4, Date.valueOf(item.getDeadline()));

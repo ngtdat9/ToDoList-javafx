@@ -26,5 +26,14 @@ public class DialogController {
         TodoData.getInstance().addTodoItem(newItem);
         return newItem;
     }
-
+    public void adoptItemDetails(ToDoItem edited) {
+        shortDescriptionField.setText(edited.getShortDescription());
+        detailsArea.setText(edited.getDetails());
+        deadlinePicker.setValue(edited.getDeadline());
+    }
+    public void modifyItemDetails(ToDoItem item) {
+        item.setShortDescription(shortDescriptionField.getText().trim());
+        item.setDetails(detailsArea.getText().trim());
+        item.setDeadline(deadlinePicker.getValue());
+    }
 }

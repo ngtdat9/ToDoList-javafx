@@ -5,6 +5,16 @@ import java.time.LocalDate;
 public class ToDoItem {
     private String username;
     private int id;
+    private int todo_id;
+
+    public int getTodo_id() {
+        return todo_id;
+    }
+
+    public void setTodo_id(int todo_id) {
+        this.todo_id = todo_id;
+    }
+
     private String shortDescription;
     private String details;
     private LocalDate deadline;
