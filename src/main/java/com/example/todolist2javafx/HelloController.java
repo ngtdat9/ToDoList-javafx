@@ -84,7 +84,7 @@ public class HelloController {
                         return o1.getDeadline().compareTo(o2.getDeadline());
                     }
                 });
-        
+
         todoListView.setItems(sortedList);
         todoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         todoListView.getSelectionModel().selectFirst();
@@ -128,7 +128,6 @@ public class HelloController {
         try {
             dialog.getDialogPane().setContent(fxmlLoader.load());
         }catch (IOException e){
-            System.out.println("Could not load the dialog");
             e.printStackTrace();
             return;
         }
@@ -138,21 +137,12 @@ public class HelloController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DialogController controller = fxmlLoader.getController();
             ToDoItem newItem = controller.processResults();
-//            todoListView.getItems().setAll(TodoData.getInstance().getToDoItems());
             todoListView.getSelectionModel().select(newItem);
-            System.out.println("User clicked OK");
-        } else {
-            System.out.println("User canceled");
         }
     }
 
     @FXML
     public void showEditItemDialog(ToDoItem selectedItem) {
-        if (selectedItem == null) {
-            System.out.println("No item selected to edit.");
-            return;
-        }
-
         Dialog<ButtonType> editDialog = new Dialog<>();
         editDialog.initOwner(mainBorderPane.getScene().getWindow());
         editDialog.setTitle("Edit Task: " + selectedItem.getShortDescription());
@@ -162,7 +152,6 @@ public class HelloController {
         try {
             editDialog.getDialogPane().setContent(fxmlLoader.load());
         } catch (IOException e) {
-            System.out.println("The dialog could not be loaded");
             e.printStackTrace();
             return;
         }
@@ -171,14 +160,14 @@ public class HelloController {
         editDialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
         DialogController editDialogController = fxmlLoader.getController();
-        editDialogController.adoptItemDetails(selectedItem); // Nạp thông tin cũ vào dialog
+        editDialogController.adoptItemDetails(selectedItem);
 
         Optional<ButtonType> result = editDialog.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            editDialogController.modifyItemDetails(selectedItem); // Lấy thông tin mới
-            TodoData.getInstance().storeTodoItems(); // Lưu lại vào cơ sở dữ liệu
-            todoListView.refresh(); // Làm mới danh sách hiển thị
+            editDialogController.modifyItemDetails(selectedItem);
+            TodoData.getInstance().storeTodoItems();
+            todoListView.refresh();
         }
     }
 
