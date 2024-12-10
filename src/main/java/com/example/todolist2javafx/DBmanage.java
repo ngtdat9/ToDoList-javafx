@@ -25,7 +25,6 @@ public class DBmanage {
             try {
                 FXMLLoader loader = new FXMLLoader(DBmanage.class.getResource(fxmlFile));
                 root = loader.load();
-                //MainMenu mainMenu = loader.getController();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
