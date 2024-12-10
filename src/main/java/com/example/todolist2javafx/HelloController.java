@@ -39,8 +39,7 @@ public class HelloController {
     private BorderPane mainBorderPane;
     @FXML
     private ContextMenu listContextMenu;
-
-    private List<ToDoItem> todoItems;
+    
     public void initialize() {
         listContextMenu = new ContextMenu();
         MenuItem deleteMenuItem = new MenuItem("Delete");
@@ -117,6 +116,7 @@ public class HelloController {
                 return cell;
             }
         });
+
     }
     @FXML
     public void showNewDialog(){
@@ -160,7 +160,7 @@ public class HelloController {
         editDialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
         DialogController editDialogController = fxmlLoader.getController();
-        editDialogController.adoptItemDetails(selectedItem);
+        editDialogController.adoptItemDetails(selectedItem); // Pre-fill dialog fields with current task details
 
         Optional<ButtonType> result = editDialog.showAndWait();
 
@@ -170,6 +170,8 @@ public class HelloController {
             todoListView.refresh();
         }
     }
+
+
 
 
     @FXML

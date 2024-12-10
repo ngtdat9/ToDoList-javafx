@@ -2,7 +2,7 @@ package com.example.todolist2javafx.datamodel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.time.LocalDate;
+import java.time.LocalDate;  
 import java.time.format.DateTimeFormatter;
 import java.sql.*;
 
@@ -38,15 +38,17 @@ public class TodoData {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              Statement stmt = conn.createStatement()) {
 
-            String query = "SELECT short_description, details, deadline FROM todo_items";
+            String query = "SELECT todo_id, short_description, details, deadline FROM todo_items";
             ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
+                int todoId = rs.getInt("todo_id");
                 String shortDescription = rs.getString("short_description");
                 String details = rs.getString("details");
                 LocalDate deadline = rs.getDate("deadline").toLocalDate();
 
                 ToDoItem toDoItem = new ToDoItem(shortDescription, details, deadline);
+                toDoItem.setTodo_id(todoId);  // Set the todo_id for the task
                 toDoItems.add(toDoItem);
             }
 
@@ -97,31 +99,6 @@ public class TodoData {
         }
     }
 
-    public void updateTodoItem(ToDoItem item) {
-        String updateQuery = "UPDATE todo_items SET short_description = ?, details = ?, deadline = ? WHERE short_description = ? AND details = ? AND deadline = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-             PreparedStatement pstmt = conn.prepareStatement(updateQuery)) {
-
-            pstmt.setString(1, item.getShortDescription());
-            pstmt.setString(2, item.getDetails());
-            pstmt.setDate(3, Date.valueOf(item.getDeadline()));
-
-
-            pstmt.setString(4, item.getShortDescription());
-            pstmt.setString(5, item.getDetails());
-            pstmt.setDate(6, Date.valueOf(item.getDeadline()));
-
-            int rowsAffected = pstmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Task updated successfully in the database.");
-            } else {
-                System.out.println("Task update failed: No matching record found.");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void saveTodoItemToDatabase(ToDoItem item) {
         String insertQuery = "INSERT INTO todo_items (user_id, short_description, details, deadline) VALUES (?, ?, ?, ?)";
