@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+
+<GridPane xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="io.github.ngtdat9.todolist.ui.TodoDialogController" styleClass="todo-form">
+    <Label text="Short description" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <TextField fx:id="shortDescriptionField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+    <Label text="Details" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <TextArea fx:id="detailsArea" wrapText="true" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+    <Label text="Deadline" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <DatePicker fx:id="deadlinePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    <Label fx:id="errorLabel" styleClass="error-text" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+</GridPane>

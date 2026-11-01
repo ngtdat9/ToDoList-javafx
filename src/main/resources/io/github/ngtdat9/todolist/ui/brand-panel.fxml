@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" styleClass="brand-panel">
+    <ImageView fitWidth="112" fitHeight="112" preserveRatio="true">
+        <Image url="@images/logo.png"/>
+    </ImageView>
+    <Label styleClass="brand-title" text="To-Do List"/>
+</VBox>

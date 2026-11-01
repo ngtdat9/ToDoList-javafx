@@ -4,13 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.example</groupId>
-    <artifactId>ToDoList-project-javafx</artifactId>
+    <groupId>io.github.ngtdat9</groupId>
+    <artifactId>todolist-javafx</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>ToDoList2-javafx</name>
+    <name>To-Do List</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>25</java.version>
+        <javafx.version>25.0.5</javafx.version>
         <junit.version>5.10.2</junit.version>
     </properties>
 
@@ -18,12 +20,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>22.0.1</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>22.0.1</version>
+            <version>${javafx.version}</version>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
@@ -49,16 +51,18 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.1</version>
                 <configuration>
-                    <source>22</source>
-                    <target>22</target>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.5.2</version>
+                <version>3.5.6</version>
+                <configuration>
+                    <argLine>--enable-native-access=org.xerial.sqlitejdbc</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.openjfx</groupId>
@@ -69,8 +73,10 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.todolist2javafx/com.example.todolist2javafx.HelloApplication
-                            </mainClass>
+                            <mainClass>io.github.ngtdat9.todolist/io.github.ngtdat9.todolist.TodoApplication</mainClass>
+                            <options>
+                                <option>--enable-native-access=javafx.graphics,org.xerial.sqlitejdbc</option>
+                            </options>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

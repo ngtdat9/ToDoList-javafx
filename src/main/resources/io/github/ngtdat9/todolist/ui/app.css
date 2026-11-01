@@ -1,0 +1,91 @@
+.root {
+    -brand-blue: #d4ebf8;
+    -brand-cream: #f1f0e8;
+    -brand-accent: #2f6f8f;
+    -muted-text: #66707a;
+    -danger: #c62828;
+}
+
+/* Log in and sign up */
+.brand-panel {
+    -fx-background-color: -brand-blue;
+    -fx-alignment: center;
+    -fx-spacing: 16;
+    -fx-padding: 24;
+    -fx-min-width: 220;
+    -fx-pref-width: 240;
+}
+
+.brand-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+.auth-form {
+    -fx-background-color: -brand-cream;
+    -fx-alignment: center-left;
+    -fx-spacing: 20;
+    -fx-padding: 32 48 32 48;
+}
+
+.auth-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.auth-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: -muted-text;
+}
+
+.auth-fields {
+    -fx-hgap: 12;
+    -fx-vgap: 12;
+}
+
+.primary-button {
+    -fx-base: -brand-accent;
+    -fx-font-weight: bold;
+    -fx-padding: 8 28 8 28;
+    -fx-cursor: hand;
+}
+
+.auth-switch {
+    -fx-alignment: center-left;
+    -fx-spacing: 2;
+}
+
+/* Main window */
+.list-cell:due {
+    -fx-text-fill: -danger;
+}
+
+.list-view:focused .list-cell:due:selected {
+    -fx-text-fill: white;
+}
+
+.details-pane {
+    -fx-spacing: 8;
+    -fx-padding: 8;
+}
+
+.deadline-row {
+    -fx-alignment: center-left;
+    -fx-spacing: 6;
+    -fx-padding: 4;
+}
+
+.deadline-text {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Task dialog */
+.todo-form {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+.error-text {
+    -fx-text-fill: -danger;
+}
