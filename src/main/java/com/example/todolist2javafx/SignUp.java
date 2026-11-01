@@ -1,10 +1,11 @@
 package com.example.todolist2javafx;
 
+import com.example.todolist2javafx.auth.AuthService;
+import com.example.todolist2javafx.storage.DataAccessException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -27,13 +28,19 @@ public class SignUp implements Initializable {
         signup_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                if (!username.getText().trim().isEmpty() && !password.getText().trim().isEmpty()) {
-                    DBmanage.signUp(actionEvent, username.getText(), password.getText());
-                } else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setContentText("Please fill in all the information");
-                    alert.show();
-
+                if (username.getText().trim().isEmpty() || password.getText().trim().isEmpty()) {
+                    Alerts.showError("Please fill in all the information");
+                    return;
+                }
+                try {
+                    if (AuthService.getInstance().signUp(username.getText(), password.getText()).isEmpty()) {
+                        Alerts.showError("This username is already taken.");
+                        return;
+                    }
+                    SceneNavigator.navigate(actionEvent, "LogIn.fxml", "Log In");
+                } catch (DataAccessException e) {
+                    e.printStackTrace();
+                    Alerts.showError("Could not save to the database. Please try again.");
                 }
             }
         });
@@ -41,9 +48,8 @@ public class SignUp implements Initializable {
             @Override
             public void handle(ActionEvent actionEvent) {
 
-                DBmanage.navigate(actionEvent, "LogIn.fxml","Log In",null);
+                SceneNavigator.navigate(actionEvent, "LogIn.fxml", "Log In");
             }
         });
     }
 }
-

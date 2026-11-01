@@ -2,6 +2,7 @@ package com.example.todolist2javafx;
 
 import com.example.todolist2javafx.datamodel.ToDoItem;
 import com.example.todolist2javafx.datamodel.TodoData;
+import com.example.todolist2javafx.storage.DataAccessException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.SortedList;
@@ -136,8 +137,13 @@ public class HelloController {
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DialogController controller = fxmlLoader.getController();
-            ToDoItem newItem = controller.processResults();
-            todoListView.getSelectionModel().select(newItem);
+            try {
+                ToDoItem newItem = controller.processResults();
+                todoListView.getSelectionModel().select(newItem);
+            } catch (DataAccessException e) {
+                e.printStackTrace();
+                Alerts.showError("Could not save the task. Check that it has a deadline and try again.");
+            }
         }
     }
 
@@ -165,9 +171,13 @@ public class HelloController {
         Optional<ButtonType> result = editDialog.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            editDialogController.modifyItemDetails(selectedItem);
-            TodoData.getInstance().storeTodoItems();
-            todoListView.refresh();
+            try {
+                editDialogController.modifyItemDetails(selectedItem);
+                todoListView.refresh();
+            } catch (DataAccessException e) {
+                e.printStackTrace();
+                Alerts.showError("Could not update the task. Check that it has a deadline and try again.");
+            }
         }
     }
 
@@ -195,12 +205,18 @@ public class HelloController {
         alert.setContentText("Are you sure? Press OK to confirm or cancel to Back out");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && (result.get() == ButtonType.OK)){
-            TodoData.getInstance().deleteTodoItem(item);
+            try {
+                TodoData.getInstance().deleteTodoItem(item);
+            } catch (DataAccessException e) {
+                e.printStackTrace();
+                Alerts.showError("Could not delete the task. Please try again.");
+            }
         }
     }
 
     @FXML
     private void handleLogout() {
+        TodoData.getInstance().logOut();
         try {
             Stage currentStage = (Stage) (logout_button.getScene().getWindow());
             FXMLLoader loader = new FXMLLoader(getClass().getResource("LogIn.fxml"));
