@@ -48,7 +48,7 @@
     </left>
     <center>
         <VBox>
-            <TextArea fx:id="itemDetailsTextArea" wrapText="true" VBox.vgrow="ALWAYS" />
+            <TextArea fx:id="itemDetailsTextArea" editable="false" wrapText="true" VBox.vgrow="ALWAYS" />
             <HBox>
                 <Label text="Due: ">
                     <font>

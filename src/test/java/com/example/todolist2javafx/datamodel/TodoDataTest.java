@@ -4,12 +4,14 @@ import com.example.todolist2javafx.storage.DataAccessException;
 import com.example.todolist2javafx.storage.Database;
 import com.example.todolist2javafx.storage.TodoRepository;
 import com.example.todolist2javafx.storage.UserRepository;
+import javafx.collections.transformation.SortedList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,6 +49,19 @@ class TodoDataTest {
         assertEquals("Kept", reloaded.getShortDescription());
         assertEquals("Edited", reloaded.getDetails());
         assertEquals(DEADLINE.plusDays(1), reloaded.getDeadline());
+    }
+
+    @Test
+    void changingADeadlineMovesTheItemInASortedList() {
+        data.logIn(alice);
+        ToDoItem first = data.addTodoItem("First", "", DEADLINE);
+        ToDoItem second = data.addTodoItem("Second", "", DEADLINE.plusDays(1));
+        SortedList<ToDoItem> sorted = new SortedList<>(data.getToDoItems(), Comparator.comparing(ToDoItem::getDeadline));
+        assertEquals(first, sorted.getFirst());
+
+        data.updateTodoItem(first, "First", "", DEADLINE.plusDays(2));
+
+        assertEquals(second, sorted.getFirst());
     }
 
     @Test

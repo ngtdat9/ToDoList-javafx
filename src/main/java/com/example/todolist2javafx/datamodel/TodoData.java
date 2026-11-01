@@ -50,6 +50,8 @@ public class TodoData {
         item.setShortDescription(shortDescription);
         item.setDetails(details);
         item.setDeadline(deadline);
+        // Replacing the element tells list views and sorted lists that the item changed.
+        toDoItems.set(toDoItems.indexOf(item), item);
     }
 
     public void deleteTodoItem(ToDoItem item) {

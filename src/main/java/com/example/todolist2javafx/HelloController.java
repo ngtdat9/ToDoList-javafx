@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
@@ -49,7 +48,9 @@ public class HelloController {
             @Override
             public void handle(ActionEvent actionEvent) {
                 ToDoItem item = todoListView.getSelectionModel().getSelectedItem();
-                deleteItem(item);
+                if (item != null) {
+                    deleteItem(item);
+                }
             }
         });
         listContextMenu.getItems().add(deleteMenuItem);
@@ -68,12 +69,7 @@ public class HelloController {
         todoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ToDoItem>() {
             @Override
             public void changed(ObservableValue<? extends ToDoItem> observableValue, ToDoItem oldValue, ToDoItem newValue) {
-                if (newValue != null) {
-                    ToDoItem item = todoListView.getSelectionModel().getSelectedItem();
-                    itemDetailsTextArea.setText(item.getDetails());
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMMM d, yyyy");
-                    deadLineLabel.setText(dtf.format(item.getDeadline()));
-                }
+                showItemDetails(newValue);
             }
         });
 
@@ -96,22 +92,23 @@ public class HelloController {
                     @Override
                     protected void updateItem(ToDoItem item, boolean empty) {
                         super.updateItem(item, empty);
+                        // Cells are reused for other items, so every property must be set on every update.
                         if (empty) {
                             setText(null);
+                            setStyle("");
+                            setContextMenu(null);
                         } else {
                             setText(item.getShortDescription());
-                            if (item.getDeadline().isBefore(LocalDate.now().plusDays(1))) {
-                                setTextFill(Color.RED);
-                            }
+                            boolean dueNow = item.getDeadline().isBefore(LocalDate.now().plusDays(1));
+                            setStyle(dueNow ? "-fx-text-fill: red;" : "");
+                            setContextMenu(listContextMenu);
                         }
                     }
                 };
 
-                cell.setContextMenu(listContextMenu);
                 cell.setOnContextMenuRequested(event -> {
                     if (!cell.isEmpty()) {
                         todoListView.getSelectionModel().select(cell.getItem());
-                        listContextMenu.show(cell, event.getScreenX(), event.getScreenY());
                     }
                 });
                 return cell;
@@ -119,6 +116,26 @@ public class HelloController {
         });
 
     }
+
+    private void showItemDetails(ToDoItem item) {
+        if (item == null) {
+            itemDetailsTextArea.clear();
+            deadLineLabel.setText("");
+        } else {
+            itemDetailsTextArea.setText(item.getDetails());
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+            deadLineLabel.setText(dtf.format(item.getDeadline()));
+        }
+    }
+
+    private void keepOpenUntilValid(Dialog<ButtonType> dialog, DialogController controller) {
+        dialog.getDialogPane().lookupButton(ButtonType.OK).addEventFilter(ActionEvent.ACTION, event -> {
+            if (!controller.validate()) {
+                event.consume();
+            }
+        });
+    }
+
     @FXML
     public void showNewDialog(){
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -134,15 +151,16 @@ public class HelloController {
         }
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        DialogController controller = fxmlLoader.getController();
+        keepOpenUntilValid(dialog, controller);
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            DialogController controller = fxmlLoader.getController();
             try {
                 ToDoItem newItem = controller.processResults();
                 todoListView.getSelectionModel().select(newItem);
             } catch (DataAccessException e) {
                 e.printStackTrace();
-                Alerts.showError("Could not save the task. Check that it has a deadline and try again.");
+                Alerts.showError("Could not save the task. Please try again.");
             }
         }
     }
@@ -167,6 +185,7 @@ public class HelloController {
 
         DialogController editDialogController = fxmlLoader.getController();
         editDialogController.adoptItemDetails(selectedItem); // Pre-fill dialog fields with current task details
+        keepOpenUntilValid(editDialog, editDialogController);
 
         Optional<ButtonType> result = editDialog.showAndWait();
 
@@ -174,9 +193,11 @@ public class HelloController {
             try {
                 editDialogController.modifyItemDetails(selectedItem);
                 todoListView.refresh();
+                todoListView.getSelectionModel().select(selectedItem);
+                showItemDetails(selectedItem);
             } catch (DataAccessException e) {
                 e.printStackTrace();
-                Alerts.showError("Could not update the task. Check that it has a deadline and try again.");
+                Alerts.showError("Could not update the task. Please try again.");
             }
         }
     }
@@ -186,15 +207,10 @@ public class HelloController {
 
     @FXML
     public void handleKeyPressed(KeyEvent keyEvent) {
-        System.out.println("Key pressed: " + keyEvent.getCode());
         ToDoItem selectedItem = todoListView.getSelectionModel().getSelectedItem();
-        if (selectedItem == null) {
-            System.out.println("No item is selected.");
-        } else {
-            System.out.println("Selected item: " + selectedItem.getShortDescription());
-            if (keyEvent.getCode().equals(KeyCode.BACK_SPACE)) {
-                deleteItem(selectedItem);
-            }
+        KeyCode code = keyEvent.getCode();
+        if (selectedItem != null && (code == KeyCode.BACK_SPACE || code == KeyCode.DELETE)) {
+            deleteItem(selectedItem);
         }
     }
 

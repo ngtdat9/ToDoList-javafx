@@ -17,6 +17,7 @@
             <TextArea fx:id="detailsArea" GridPane.columnIndex="1" GridPane.rowIndex="1" wrapText="true"/>
             <Label text="Deadline:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
             <DatePicker fx:id="deadlinePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            <Label fx:id="errorLabel" textFill="#c62828" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
         </GridPane>
     </content>
 </DialogPane>
